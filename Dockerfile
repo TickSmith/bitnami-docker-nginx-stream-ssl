@@ -8,8 +8,13 @@ USER root
 ARG NGINX_VERSION
 ## Install required packages and build dependencies
 RUN install_packages dirmngr gpg gpg-agent curl build-essential libpcre3-dev zlib1g-dev libssl-dev
+
 ## Add trusted NGINX PGP key for tarball integrity verification
-RUN gpg --keyserver pgp.mit.edu --recv-key 13C82A63B603576156E30A4EA0EA981B66B0D967
+# server was down : RUN gpg --keyserver pgp.mit.edu --recv-key 13C82A63B603576156E30A4EA0EA981B66B0D967
+RUN curl -sSL https://nginx.org/keys/thresh.key | gpg --import -
+RUN curl -sSL https://nginx.org/keys/nginx_signing.key | gpg --import -
+### 
+
 ## Download NGINX, verify integrity and extract
 RUN cd /tmp && \
     curl -O http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
